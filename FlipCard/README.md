@@ -1,0 +1,2 @@
+- Config.ts 裡面可以調整 row、col、牌匹配數量
+- 如不要打亂牌組，到 CardView.ts 內將 cards.sort(() => 0.5 - Math.random()); 註解掉
