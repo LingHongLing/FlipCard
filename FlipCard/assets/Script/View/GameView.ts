@@ -32,12 +32,6 @@ export default class NewClass extends cc.Component {
         this._cardView = this.cardView.getComponent(CardView);
         this._cardView.setEventDispatcher(this._onEventListener.bind(this));
         this.resetButton.node.on("click", this._resetGame.bind(this));
-        // 因 CardView 設計的關係不能在此時機呼叫 this.resetGame();
-        this._gameTime = 0;
-        this._setHintText(HINT_TEXTS.CHOSEN);
-        this._setWrightLabel(0);
-        this._setTimeText(0);
-        this.schedule(this._updateTime, 1);
     }
 
     private _updateTime(){
@@ -46,13 +40,15 @@ export default class NewClass extends cc.Component {
     };
 
     private _onEventListener(event: any){
-        if (event == this._cardView.EVENT.CHOSEN_WRONG){
+        if (event == this._cardView.EVENT.READY){
+            this._resetGame();
+        }else if (event == this._cardView.EVENT.CHOSEN_WRONG){
             this._setHintText(HINT_TEXTS.WRONG);
         }else if (event == this._cardView.EVENT.CHOSEN_WRIGHT) {
             this._setHintText(HINT_TEXTS.WRIGHT);
             this._setWrightLabel(this._cardView.getRightAmount());
             if (this._cardView.isClear()){
-                this.unschedule(this._updateTime)
+                this.unschedule(this._updateTime);
                 this.scheduleOnce(() => this._setHintText(HINT_TEXTS.CLEAR), 1);
             };
         };
@@ -60,9 +56,12 @@ export default class NewClass extends cc.Component {
 
     private _resetGame(){
         this._gameTime = 0;
+        this.unschedule(this._updateTime)
+        this.schedule(this._updateTime, 1);
         this._cardView.initGame();
         this._setHintText(HINT_TEXTS.CHOSEN);
         this._setWrightLabel(0);
+        this._setTimeText(0);
     };
 
     private _setTimeText(time: number){

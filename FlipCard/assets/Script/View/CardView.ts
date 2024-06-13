@@ -7,6 +7,7 @@ const {ccclass, property} = cc._decorator;
 const LAYOUT_CELL_SIZE = cc.size(50, 80);
 const SPRITE_FRAME_FOLDER_PATH = 'card';
 const EVENT = {
+    READY: "READY",
     CHOSEN_WRIGHT: "CHOSEN_WRIGHT",
     CHOSEN_WRONG: "CHOSEN_WRONG",
 };
@@ -77,7 +78,7 @@ export default class CardView extends cc.Component {
     private _onInitViewState(isFirstExec: Boolean){
         this._resizeLayout();
         this._cards = this._createCards();
-        this._stateMachine.transfer(VIEW_STATE.INIT_GAME);
+        this._eventDispatcher(EVENT.READY);
     };
 
     private _onInitGameState(isFirstExec: Boolean){
